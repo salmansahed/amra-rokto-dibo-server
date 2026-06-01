@@ -34,6 +34,38 @@ async function run() {
       res.send(result);
     });
 
+    app.get("/blood-cards", async (req, res) => {
+      const bloodCards = await bloodCardCollection.find().toArray();
+      res.send(bloodCards);
+    });
+
+    app.get("/blood-cards/:id", async (req, res) => {
+      const id = req.params.id;
+      const bloodCard = await bloodCardCollection.findOne({ userId: id });
+      if (!bloodCard) {
+        return res.send({ message: "No card found", success: false });
+      }
+      res.send(bloodCard);
+    });
+
+    // Patch
+    app.patch("/blood-cards/:id", async (req, res) => {
+      const id = req.params.id;
+      const updatedBloodCard = req.body;
+      const result = await bloodCardCollection.updateOne(
+        { userId: id },
+        { $set: updatedBloodCard },
+      );
+      res.send(result);
+    });
+
+    // Delete
+    app.delete("/blood-cards/:id", async (req, res) => {
+      const id = req.params.id;
+      const result = await bloodCardCollection.deleteOne({ userId: id });
+      res.send(result);
+    });
+
     // await client.db("admin").command({ ping: 1 });
     console.log(
       "Pinged your deployment. You successfully connected to MongoDB!",
