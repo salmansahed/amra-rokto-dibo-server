@@ -35,8 +35,21 @@ async function run() {
     });
 
     app.get("/blood-cards", async (req, res) => {
-      const bloodCards = await bloodCardCollection.find().toArray();
-      res.send(bloodCards);
+      const search = req.query.search;
+      const bloodGroup = req.query.bloodGroup;
+      let query = {};
+      if (search) {
+        query.userName = { $regex: search, $options: "i" };
+      }
+      if (bloodGroup) {
+        query.bloodGroup = bloodGroup;
+      }
+      try {
+        const bloodCards = await bloodCardCollection.find(query).toArray();
+        res.send(bloodCards);
+      } catch (error) {
+        res.send({ message: "Server error", error: error.message });
+      }
     });
 
     app.get("/blood-cards/:id", async (req, res) => {
