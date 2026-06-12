@@ -45,7 +45,7 @@ async function run() {
         query.bloodGroup = bloodGroup;
       }
       try {
-        const bloodCards = await bloodCardCollection.find(query).toArray();
+        const bloodCards = await bloodCardCollection.find(query).sort({ _id: -1 }).toArray();
         res.send(bloodCards);
       } catch (error) {
         res.send({ message: "Server error", error: error.message });
